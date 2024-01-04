@@ -7,9 +7,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 // Datasource 에 직접 접근
 public interface PostRepository extends JpaRepository<Post, Long> {
 
-    // TODO
-    // 특정 id 글 조회수 +1 증가 (UPDATE)
-//    int incViewCnt(Long id);
+    // TODO :
+    //  가급적 기본 JPA 메소드로만 구현해보세요
+    //  필요하면 query method 선언해서 사용해도 됨.
 
 
 }

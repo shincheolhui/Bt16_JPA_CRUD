@@ -16,7 +16,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Entity(name = "TBL_POST")
-@EntityListeners(value = AuditingEntityListener.class)
 public class Post {
 
     @Id
@@ -40,9 +39,6 @@ public class Post {
     private String user;
 
     @Column(nullable = false, updatable = false)
-    @CreatedDate
     private LocalDateTime regDate;
-
-
 
 }

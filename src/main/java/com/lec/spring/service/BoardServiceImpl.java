@@ -2,10 +2,10 @@ package com.lec.spring.service;
 
 import com.lec.spring.domain.Post;
 import com.lec.spring.repository.PostRepository;
-import org.apache.tomcat.jni.Pool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -37,55 +37,50 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
+    @Transactional
     public Post detail(Long id) {
-        // TODO
-        optionalPost = postRepository.findById(id);
-        Post post = optionalPost.get();
-        System.out.println("BoardServiceImpl, detail(Long id), Post post = optionalPost.get() 는 " + post); // post 값을 확인했다. 이제 조회수만 뽑아서 더하기 1을 하고 다시 설정해보자.
-
-        System.out.println("BoardServiceImpl, detail(Long id), post.getViewCnt() 는 " + post.getViewCnt()); // 현재 조회수도 확인했다.
-        long incViewCnt = post.getViewCnt() + 1; // 현재 조회수에 1을 더했다.
-        System.out.println("현재 조회수에 더하기 1 은 " + incViewCnt); // 더하기가 아주 잘되는군, 이제 더한 값을 저장해서 조회수를 올려보자.
-        post.setViewCnt(incViewCnt);
-        postRepository.save(post);
-        // 저장까지 잘되네, 목록화면에서 특정 글을 클릭해서 조회하면으로 이동하면 목록화면의 조회수보다 조회화면의 조회수가 1이 크고, 다시 목록화면으로 이동하면 조회화면의 조회수가 목록화면에 똑같이 나온당.
-
+        Post post = postRepository.findById(id).orElse(null);  // SELECT
+        if (post != null) {
+            // 조회수 증가
+            post.setViewCnt(post.getViewCnt() + 1);
+            postRepository.save(post);  // UPDATE
+        }
         return post;
     }
 
     @Override
     public List<Post> list() {
         // TODO
-        return postRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
+        return postRepository.findAll(Sort.by(Sort.Order.desc("id")));
     }
 
     @Override
     public Post selectById(Long id) {
         // TODO
-        optionalPost = postRepository.findById(id); // Optional<Post> 타입
-        return optionalPost.get();
+//        optionalPost = postRepository.findById(id); // Optional<Post> 타입
+        return postRepository.findById(id).orElse(null);
     }
 
     @Override
     public int update(Post post) {
         // TODO
-        int result = 0;
-        if (post.getId() != null) {
-            postRepository.save(post);
-            result = 1;
-        }
-        return result;
+        Post data = postRepository.findById(post.getId()).orElse(null);
+        if (data == null) return 0;
+
+        data.setSubject(post.getSubject());
+        data.setContent(post.getContent());
+
+        postRepository.save(data);  // UPDATE
+        return 1;
     }
 
     @Override
     public int deleteById(Long id) {
         // TODO
-        int result = 0;
-        optionalPost = postRepository.findById(id);
-        if (optionalPost.isPresent()) {
-            postRepository.deleteById(id);
-            result = 1;
-        }
-        return result;
+        boolean exists = postRepository.existsById(id);
+        if (!exists) return 0;
+
+        postRepository.deleteById(id);
+        return 1;
     }
 }
