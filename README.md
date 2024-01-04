@@ -7,9 +7,9 @@ ORM ( Object Relational Mapping )
 JPA ( Java Persistence API )
 </li>
 <li>
-Hibernate (JPA의 실제 구현체, implementation)
+Hibernate ( JPA의 실제 구현체, implementation )
 </li>
 <li>
-Spring Data JPA (Spring에서 Hibernate를 간편하게 사용하기 위한 것)
+Spring Data JPA ( Spring에서 Hibernate를 간편하게 사용하기 위한 것 )
 </li>
 </ul>
